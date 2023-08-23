@@ -25,7 +25,7 @@ public class SpringSecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new CustomAuthenticationConverter());
 
         http.authorizeHttpRequests(authorization -> {
-            authorization.requestMatchers("/test/login").permitAll();
+            authorization.requestMatchers("/user/*").hasRole("user").requestMatchers("/admin/*").hasRole("admin");
             authorization.anyRequest().authenticated();
         });
         http.oauth2ResourceServer(oauth2 -> oauth2
