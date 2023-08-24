@@ -2,6 +2,9 @@ package ru.javabegin.oauth2.spring.test_oauth2.controller;
 
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.CreatedResponseUtil;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +54,30 @@ public class Test {
 //    @PreAuthorize("hasRole('admin')")
 //    и
 //    @PreAuthorize("hasAuthority('ROLE_admin')")
+
+    @PostMapping("/deletebyid")
+    public ResponseEntity deleteByUserId(@RequestBody String userId){
+        keycloakUtils.deleteKeycloakUser(userId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/id")
+    public  ResponseEntity<UserRepresentation> findById(@RequestBody String userId){
+
+        return ResponseEntity.ok(keycloakUtils.findUserById(userId));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<UserRepresentation>> search(@RequestBody String email){
+        return  ResponseEntity.ok(keycloakUtils.searchKeycloakUsers(email));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<UserDTO> userDTOResponseEntity(@RequestBody UserDTO userDTO){
+        keycloakUtils.updateKeycloakUser(userDTO);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 }

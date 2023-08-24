@@ -13,6 +13,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.javabegin.oauth2.spring.test_oauth2.dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,5 +90,30 @@ public class KeycloakUtils {
         UserResource uniqueUserResource = userResource.get(userId);
 
         uniqueUserResource.roles().realmLevel().add(kcRoles);
+    }
+
+    public void deleteKeycloakUser(String userId) {
+        UserResource uniqueUserResource = userResource.get(userId);
+        uniqueUserResource.remove();
+    }
+
+    public UserRepresentation findUserById(String userId) {
+        return userResource.get(userId).toRepresentation();
+    }
+
+    public List<UserRepresentation> searchKeycloakUsers(String email) {
+        return userResource.searchByAttributes(email);
+    }
+
+    public void updateKeycloakUser(UserDTO userDTO) {
+        CredentialRepresentation credentialRepresentation = createPasswordCredentials(userDTO.getPassword());
+
+        UserRepresentation kcUser = new UserRepresentation();
+        kcUser.setUsername(userDTO.getUsername());
+        kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
+        kcUser.setEmail(userDTO.getEmail());
+
+        UserResource uniqueUserResource = userResource.get(userDTO.getId());
+        uniqueUserResource.update(kcUser);
     }
 }
